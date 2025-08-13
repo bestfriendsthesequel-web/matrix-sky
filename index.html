@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Skyler — The Matrix Has You</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    :root{--green:#00ff66}
+    html,body{height:100%;background:#000}
+    body{margin:0;display:flex;align-items:center;justify-content:center}
+    .screen{
+      color:var(--green);
+      font-family:'VT323','Courier New',Courier,monospace;
+      font-size:clamp(28px,7vw,84px);
+      text-shadow:0 0 12px rgba(0,255,102,.55),0 0 2px rgba(0,255,102,.9);
+      white-space:pre-wrap;
+      padding:2rem;
+      line-height:1.1;
+      letter-spacing:.02em;
+      user-select:none;
+    }
+    .caret{display:inline-block;width:.6ch;border-right:2px solid currentColor;transform:translateY(.12em);animation:blink .8s steps(1) infinite}
+    @keyframes blink{50%{opacity:0}}
+    .flicker{animation:flicker 6s linear infinite both}
+    @keyframes flicker{0%,100%{opacity:1}92%{opacity:.98}94%{opacity:.95}96%{opacity:.9}98%{opacity:.97}}
+  </style>
+</head>
+<body>
+  <div class="screen flicker" aria-live="polite">
+    <span id="line"></span><span class="caret" aria-hidden="true"></span>
+  </div>
+
+  <script>
+  (()=>{
+    const text = "Skyler.... The Matrix Has You....";
+    const el = document.getElementById('line');
+    const caret = document.querySelector('.caret');
+    const baseDelay = 65; // ms per character
+    let i = 0;
+
+    function type() {
+      if (i < text.length) {
+        el.textContent += text[i++];
+        const ch = text[i-1];
+        const delay = (ch === '.' ? baseDelay*2 : ch === ' ' ? baseDelay*1.4 : baseDelay);
+        setTimeout(type, delay);
+      } else {
+        caret.style.animation = 'blink .8s steps(1) infinite';
+      }
+    }
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      document.querySelector('.flicker')?.classList.remove('flicker');
+      el.textContent = text;
+      caret.style.display = 'none';
+    } else {
+      type();
+    }
+  })();
+  </script>
+</body>
+</html>
